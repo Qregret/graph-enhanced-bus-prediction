@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>基础台账与线路GIS management - 智能公交调度平台</title>
+<!-- Fonts and Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-primary": "#4cd7f6",
+                    "tertiary": "#8c5000",
+                    "primary-fixed": "#acedff",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#2d1600",
+                    "primary-fixed-dim": "#4cd7f6",
+                    "on-secondary-container": "#3f6b76",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e0e3e6",
+                    "secondary-fixed": "#bceaf7",
+                    "on-secondary-fixed-variant": "#1e4d58",
+                    "secondary-fixed-dim": "#a1cedb",
+                    "on-error-container": "#93000a",
+                    "on-surface-variant": "#3d494c",
+                    "tertiary-container": "#e89337",
+                    "surface-container-high": "#e6e8eb",
+                    "on-tertiary-fixed-variant": "#6a3b00",
+                    "primary-container": "#06b6d4",
+                    "tertiary-fixed-dim": "#ffb873",
+                    "tertiary-fixed": "#ffdcbf",
+                    "on-secondary-fixed": "#001f26",
+                    "on-primary-container": "#00424f",
+                    "on-primary-fixed-variant": "#004e5c",
+                    "background": "#f7f9fc",
+                    "surface-container-highest": "#e0e3e6",
+                    "outline-variant": "#bcc9cd",
+                    "inverse-surface": "#2d3133",
+                    "surface-tint": "#00687a",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#bceaf7",
+                    "error": "#ba1a1a",
+                    "on-surface": "#191c1e",
+                    "outline": "#6d797d",
+                    "surface": "#f7f9fc",
+                    "surface-container": "#eceef1",
+                    "error-container": "#ffdad6",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#191c1e",
+                    "surface-dim": "#d8dadd",
+                    "surface-container-low": "#f2f4f7",
+                    "primary": "#00687a",
+                    "inverse-on-surface": "#eff1f4",
+                    "on-tertiary-container": "#5b3200",
+                    "on-primary-fixed": "#001f26",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#386570",
+                    "surface-bright": "#f7f9fc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fc; }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        /* Precision Luminary Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e0e3e6; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #bcc9cd; }
+    </style>
+</head>
+<body class="text-on-surface overflow-hidden">
+<!-- SideNavBar Integration -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 p-4 bg-[#f2f4f7] dark:bg-slate-950 flex flex-col font-inter text-sm font-medium">
+<div class="mb-8 px-2">
+<h1 class="font-manrope font-extrabold text-[#00687a] text-xl tracking-tight">智能公交调度平台</h1>
+<p class="text-on-surface-variant text-xs opacity-60">Enterprise Transit v2.0</p>
+</div>
+<nav class="space-y-1 flex-1">
+<div class="flex items-center gap-3 px-3 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out cursor-pointer rounded-lg">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span>综合监控</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out cursor-pointer rounded-lg">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span>客流预测</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out cursor-pointer rounded-lg">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span>智能调度</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out cursor-pointer rounded-lg">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>算法评估</span>
+</div>
+<!-- ACTIVE: GIS管理 -->
+<div class="flex items-center gap-3 px-3 py-3 bg-white dark:bg-slate-800 text-[#00687a] shadow-sm rounded-lg font-bold transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span>GIS管理</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out cursor-pointer rounded-lg">
+<span class="material-symbols-outlined" data-icon="dashboard_customize">dashboard_customize</span>
+<span>大屏引导</span>
+</div>
+</nav>
+<div class="mt-auto pt-4 border-t border-outline-variant/10">
+<div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span>系统管理员</span>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar Integration -->
+<header class="sticky top-0 w-full z-40 flex items-center justify-between bg-white/80 backdrop-blur-xl h-16 px-8 border-b-0">
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-high rounded-full border-none text-sm w-80 focus:ring-2 focus:ring-primary/20 transition-all" placeholder="搜索线路、站点、地理编码..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-slate-100 transition-colors rounded-full relative cursor-pointer active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-slate-100 transition-colors rounded-full cursor-pointer active:scale-95">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs ml-2 cursor-pointer transition-all">
+                    JD
+                </div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="flex-1 flex overflow-hidden relative">
+<!-- Left Panel: Tree View -->
+<section class="w-80 bg-surface-container-low flex flex-col h-full z-10">
+<div class="p-6">
+<h2 class="font-manrope font-bold text-lg tracking-tight mb-4">线路资产台账</h2>
+<div class="flex items-center gap-2 mb-6">
+<button class="flex-1 py-1.5 px-3 bg-white text-primary text-xs font-bold rounded-lg shadow-sm border-none transition-all hover:bg-primary hover:text-white">
+                            全部线路
+                        </button>
+<button class="flex-1 py-1.5 px-3 bg-surface-container-high text-on-surface-variant text-xs font-medium rounded-lg border-none transition-all hover:bg-white">
+                            运营中
+                        </button>
+</div>
+<!-- Tree List -->
+<div class="space-y-4 overflow-y-auto max-h-[calc(100vh-250px)]">
+<!-- Line 1 -->
+<div class="group">
+<div class="flex items-center justify-between p-2 hover:bg-white rounded-lg transition-all cursor-pointer">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+<span class="font-semibold text-sm">1号线 (环城干线)</span>
+</div>
+<span class="bg-primary/10 text-primary text-[10px] px-1.5 py-0.5 rounded font-bold">24 站</span>
+</div>
+<div class="ml-6 mt-1 space-y-1 border-l border-outline-variant/30">
+<div class="pl-4 py-1.5 flex items-center justify-between text-xs text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span>中心广场总站</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+</div>
+<div class="pl-4 py-1.5 flex items-center justify-between text-xs text-on-surface-variant hover:text-primary cursor-pointer transition-colors bg-white/50 rounded-r-md">
+<span class="font-medium text-primary">科技园北站</span>
+<span class="material-symbols-outlined text-[14px] text-primary" data-icon="my_location">my_location</span>
+</div>
+<div class="pl-4 py-1.5 flex items-center justify-between text-xs text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span>奥体中心站</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+</div>
+</div>
+</div>
+<!-- Line 2 -->
+<div class="group">
+<div class="flex items-center justify-between p-2 hover:bg-white rounded-lg transition-all cursor-pointer">
+<div class="flex items-center gap-2 opacity-60">
+<span class="material-symbols-outlined text-sm" data-icon="keyboard_arrow_right">keyboard_arrow_right</span>
+<span class="font-semibold text-sm">2号线 (南北支线)</span>
+</div>
+<span class="bg-surface-container-highest text-outline text-[10px] px-1.5 py-0.5 rounded font-bold">18 站</span>
+</div>
+</div>
+<!-- Line 3 -->
+<div class="group">
+<div class="flex items-center justify-between p-2 hover:bg-white rounded-lg transition-all cursor-pointer">
+<div class="flex items-center gap-2 opacity-60">
+<span class="material-symbols-outlined text-sm" data-icon="keyboard_arrow_right">keyboard_arrow_right</span>
+<span class="font-semibold text-sm">3号线 (机场专线)</span>
+</div>
+<span class="bg-surface-container-highest text-outline text-[10px] px-1.5 py-0.5 rounded font-bold">12 站</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-auto p-6 bg-surface-container-low border-t border-outline-variant/10">
+<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                        新建线路档案
+                    </button>
+</div>
+</section>
+<!-- Center: Interactive Map Area -->
+<section class="flex-1 relative bg-white">
+<div class="absolute inset-0 bg-[#e5e7eb]">
+<!-- Placeholder for Map Visualization -->
+<img class="w-full h-full object-cover" data-alt="Detailed urban digital map with transit lines highlighted in cyan and bus station markers with clean minimalist aesthetic" data-location="Hangzhou" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwP66n_5bo7dXi16EdMkJNkU3uSf0MEiIdHxSk8LpdRXd1F_7KNPC-7gQAi7OCYMuq7JoISOHD3sfPSqMtKnmR-f3F2IYre8nkJDSHcXAz4H-3oAan3oyd0ITu-rfNFw9m6wo0cnbp157ubz4vxFArM0Xqcu2B4IpxEny33DP0l2Adfj1RTN_1OaBg5ut7gvhH7alb_bzNonsm5UFgRxO-df_QFptmTljXIDk11o8axwyVHBJWc5g_C84bLSBNXKLLiaWBTdyX9y0"/>
+<!-- SVG Overlay for Route Simulation -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" viewbox="0 0 1000 800">
+<path class="opacity-60 drop-shadow-lg" d="M100 200 L300 250 L500 220 L700 350 L850 320" fill="none" stroke="#00687a" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"></path>
+<circle cx="100" cy="200" fill="white" r="8" stroke="#00687a" stroke-width="3"></circle>
+<circle cx="300" cy="250" fill="white" r="8" stroke="#00687a" stroke-width="3"></circle>
+<circle cx="500" cy="220" fill="#00687a" r="10"></circle> <!-- Active Station -->
+<circle cx="700" cy="350" fill="white" r="8" stroke="#00687a" stroke-width="3"></circle>
+<circle cx="850" cy="320" fill="white" r="8" stroke="#00687a" stroke-width="3"></circle>
+</svg>
+</div>
+<!-- Map Tools Floating Bar -->
+<div class="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-1 p-1 bg-white/80 backdrop-blur-xl rounded-full shadow-2xl z-20">
+<button class="p-2.5 rounded-full hover:bg-primary-container/20 text-on-surface-variant hover:text-primary transition-all group" title="添加站点">
+<span class="material-symbols-outlined" data-icon="add_location">add_location</span>
+</button>
+<div class="w-[1px] h-6 bg-outline-variant/30"></div>
+<button class="p-2.5 rounded-full hover:bg-primary-container/20 text-on-surface-variant hover:text-primary transition-all" title="绘制线路">
+<span class="material-symbols-outlined" data-icon="gesture">gesture</span>
+</button>
+<button class="p-2.5 rounded-full hover:bg-primary-container/20 text-on-surface-variant hover:text-primary transition-all" title="距离测量">
+<span class="material-symbols-outlined" data-icon="straighten">straighten</span>
+</button>
+<div class="w-[1px] h-6 bg-outline-variant/30"></div>
+<button class="p-2.5 rounded-full hover:bg-primary-container/20 text-on-surface-variant hover:text-primary transition-all" title="选择范围">
+<span class="material-symbols-outlined" data-icon="select_window">select_window</span>
+</button>
+</div>
+<!-- Navigation Controls -->
+<div class="absolute bottom-6 right-6 flex flex-col gap-2 z-20">
+<button class="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-lg text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-lg text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-lg text-on-surface hover:text-primary mt-2 transition-colors">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</button>
+</div>
+<!-- Floating Panel: Station Properties -->
+<div class="absolute top-24 right-6 w-80 bg-white/90 backdrop-blur-2xl rounded-2xl shadow-2xl p-6 z-20 border border-white/20">
+<div class="flex items-start justify-between mb-6">
+<div>
+<span class="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2 py-0.5 rounded-full">Station Detail</span>
+<h3 class="font-manrope font-extrabold text-xl text-on-surface mt-1">科技园北站</h3>
+<p class="text-xs text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="location_on">location_on</span>
+                                滨江区科技大道128号
+                            </p>
+</div>
+<button class="p-1 hover:bg-surface-container-high rounded-lg">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="close">close</span>
+</button>
+</div>
+<div class="space-y-5">
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 rounded-xl bg-surface-container-low">
+<span class="text-[10px] text-on-surface-variant font-medium block mb-1">经度</span>
+<span class="text-sm font-bold font-manrope">120.2145</span>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-low">
+<span class="text-[10px] text-on-surface-variant font-medium block mb-1">纬度</span>
+<span class="text-sm font-bold font-manrope">30.2081</span>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-semibold text-on-surface-variant">最大容纳量</span>
+<span class="text-xs font-bold text-primary">500 人</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-3/4 rounded-full"></div>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/20">
+<span class="text-xs font-bold text-on-surface block mb-3">经停线路 (3)</span>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded-lg border border-primary/20">1号线</span>
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded-lg">5号线</span>
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-[10px] font-bold rounded-lg">B1快速线</span>
+</div>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 py-2.5 bg-primary text-white rounded-xl text-xs font-bold hover:shadow-lg hover:shadow-primary/30 transition-all">编辑属性</button>
+<button class="px-3 py-2.5 bg-surface-container-high text-on-surface-variant rounded-xl text-xs font-bold hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="photo_camera">photo_camera</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Map Info Label -->
+<div class="absolute bottom-6 left-6 px-4 py-2 bg-black/60 backdrop-blur-md rounded-lg text-white text-[10px] tracking-wide z-20">
+                    坐标系: GCJ-02 | 缩放级别: 14.5 | 瓦片层: 标准路网(亮)
+                </div>
+</section>
+</div>
+</main>
+</body></html>

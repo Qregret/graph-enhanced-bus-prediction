@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>智能公交调度平台 - 算法评估</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#4cd7f6",
+                        "tertiary": "#8c5000",
+                        "primary-fixed": "#acedff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#2d1600",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "on-secondary-container": "#3f6b76",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e0e3e6",
+                        "secondary-fixed": "#bceaf7",
+                        "on-secondary-fixed-variant": "#1e4d58",
+                        "secondary-fixed-dim": "#a1cedb",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#3d494c",
+                        "tertiary-container": "#e89337",
+                        "surface-container-high": "#e6e8eb",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "primary-container": "#06b6d4",
+                        "tertiary-fixed-dim": "#ffb873",
+                        "tertiary-fixed": "#ffdcbf",
+                        "on-secondary-fixed": "#001f26",
+                        "on-primary-container": "#00424f",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "background": "#f7f9fc",
+                        "surface-container-highest": "#e0e3e6",
+                        "outline-variant": "#bcc9cd",
+                        "inverse-surface": "#2d3133",
+                        "surface-tint": "#00687a",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#bceaf7",
+                        "error": "#ba1a1a",
+                        "on-surface": "#191c1e",
+                        "outline": "#6d797d",
+                        "surface": "#f7f9fc",
+                        "surface-container": "#eceef1",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#191c1e",
+                        "surface-dim": "#d8dadd",
+                        "surface-container-low": "#f2f4f7",
+                        "primary": "#00687a",
+                        "inverse-on-surface": "#eff1f4",
+                        "on-tertiary-container": "#5b3200",
+                        "on-primary-fixed": "#001f26",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#386570",
+                        "surface-bright": "#f7f9fc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chart-grid {
+            background-image: radial-gradient(#bcc9cd 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 p-4 bg-[#f2f4f7] dark:bg-slate-950 flex flex-col no-border surface-container-low">
+<div class="mb-8 px-4">
+<h1 class="font-manrope font-extrabold text-[#00687a] text-xl tracking-tight">智能公交调度平台</h1>
+<p class="text-xs opacity-60 font-inter">Enterprise Transit v2.0</p>
+</div>
+<nav class="flex-1 space-y-2">
+<div class="flex items-center gap-3 px-4 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="font-inter text-sm font-medium">综合监控</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-inter text-sm font-medium">客流预测</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined">schedule</span>
+<span class="font-inter text-sm font-medium">智能调度</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-800 text-[#00687a] shadow-sm rounded-lg transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-inter text-sm font-medium">算法评估</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined">map</span>
+<span class="font-inter text-sm font-medium">GIS管理</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-inter text-sm font-medium">大屏引导</span>
+</div>
+</nav>
+<div class="mt-auto p-4 bg-surface-container-high/50 rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">shield_person</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Admin User</p>
+<p class="text-xs opacity-60 text-on-surface">System Manager</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full z-40 flex items-center justify-between px-8 h-16 bg-white/80 backdrop-blur-xl bg-surface-container-low">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2 bg-surface-container-high px-4 py-2 rounded-full">
+<span class="material-symbols-outlined text-sm opacity-50">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-64 font-body" placeholder="搜索评估记录..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant/30 mx-2"></div>
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-white font-bold text-xs">A</div>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-8 space-y-8">
+<!-- Header Section -->
+<div class="flex justify-between items-end">
+<div class="space-y-1">
+<span class="text-xs font-bold font-label text-on-surface-variant tracking-widest uppercase">Performance Analysis</span>
+<h2 class="text-3xl font-headline font-extrabold tracking-tight text-on-surface">历史数据与算法评估</h2>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 bg-secondary-container text-on-secondary-container rounded-lg text-sm font-medium transition-all hover:brightness-95 active:scale-95">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+<span>最近30天</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-lg text-sm font-bold transition-all hover:shadow-lg hover:shadow-primary/20 active:scale-95">
+<span class="material-symbols-outlined text-lg">download</span>
+<span>导出报告</span>
+</button>
+</div>
+</div>
+<!-- Bento Metrics Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="md:col-span-1 bg-surface-container-lowest p-6 rounded-xl shadow-sm space-y-4">
+<div class="flex justify-between items-start">
+<div class="p-2 bg-primary-fixed rounded-lg">
+<span class="material-symbols-outlined text-primary">data_thresholding</span>
+</div>
+<span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">较上期 -0.4%</span>
+</div>
+<div>
+<p class="text-sm text-on-surface-variant font-label">MAPE (平均绝对百分比误差)</p>
+<h3 class="text-4xl font-headline font-extrabold text-primary mt-1">7.5%</h3>
+</div>
+</div>
+<div class="md:col-span-1 bg-surface-container-lowest p-6 rounded-xl shadow-sm space-y-4">
+<div class="flex justify-between items-start">
+<div class="p-2 bg-secondary-fixed rounded-lg">
+<span class="material-symbols-outlined text-secondary">timer</span>
+</div>
+<span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">稳定</span>
+</div>
+<div>
+<p class="text-sm text-on-surface-variant font-label">RMSE (均方根误差)</p>
+<h3 class="text-4xl font-headline font-extrabold text-secondary mt-1">3.2 <span class="text-lg font-medium">mins</span></h3>
+</div>
+</div>
+<div class="md:col-span-2 bg-surface-container-lowest p-6 rounded-xl shadow-sm flex items-center gap-8">
+<div class="flex-1 space-y-2">
+<p class="text-sm text-on-surface-variant font-label">算法模型置信度</p>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container w-[92%]"></div>
+</div>
+<div class="flex justify-between text-xs font-medium">
+<span>High Precision Model v4.1</span>
+<span class="text-primary">92.4%</span>
+</div>
+</div>
+<div class="w-[1px] h-12 bg-outline-variant/30"></div>
+<div class="text-center">
+<p class="text-xs text-on-surface-variant font-label mb-1">样本总量</p>
+<p class="text-xl font-bold">142,809</p>
+</div>
+</div>
+</div>
+<!-- Main Visualization Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Regression Chart Card -->
+<div class="lg:col-span-2 bg-surface-container-lowest rounded-xl shadow-sm p-8 overflow-hidden relative">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h4 class="text-lg font-headline font-bold text-on-surface">回归分析：预测值 vs 实际值</h4>
+<p class="text-sm text-on-surface-variant">分析调度算法在不同流量条件下的拟合优度</p>
+</div>
+<div class="flex gap-2">
+<span class="flex items-center gap-1.5 text-xs font-medium"><span class="w-2.5 h-2.5 rounded-full bg-primary"></span> 预测值</span>
+<span class="flex items-center gap-1.5 text-xs font-medium"><span class="w-2.5 h-2.5 rounded-full bg-outline"></span> 趋势线</span>
+</div>
+</div>
+<!-- Simplified Visual Representation of the Scatter Plot -->
+<div class="relative aspect-[16/9] w-full chart-grid border-b border-l border-outline-variant/50 flex items-end">
+<div class="absolute bottom-0 left-0 w-[110%] h-[1px] bg-primary/20 rotate-[-35deg] origin-bottom-left translate-y-1"></div>
+<div class="absolute bottom-0 left-0 w-[110%] h-[2px] bg-primary border-t border-dashed border-primary origin-bottom-left rotate-[-35deg] shadow-[0_0_8px_rgba(0,104,122,0.3)]"></div>
+<div class="absolute bottom-[20%] left-[15%] w-3 h-3 bg-primary/40 rounded-full blur-[1px]"></div>
+<div class="absolute bottom-[40%] left-[35%] w-2 h-2 bg-primary rounded-full ring-4 ring-primary/10"></div>
+<div class="absolute bottom-[35%] left-[45%] w-2.5 h-2.5 bg-primary/60 rounded-full"></div>
+<div class="absolute bottom-[60%] left-[55%] w-3 h-3 bg-primary rounded-full shadow-lg"></div>
+<div class="absolute bottom-[55%] left-[65%] w-2 h-2 bg-primary/40 rounded-full"></div>
+<div class="absolute bottom-[75%] left-[75%] w-3.5 h-3.5 bg-primary rounded-full ring-8 ring-primary/5"></div>
+<div class="absolute bottom-[85%] left-[90%] w-2.5 h-2.5 bg-primary/70 rounded-full"></div>
+<div class="absolute bottom-[10%] left-[10%] w-2 h-2 bg-primary/50 rounded-full"></div>
+<div class="absolute bottom-[50%] left-[50%] w-3 h-3 bg-primary rounded-full"></div>
+<div class="absolute bottom-[80%] left-[20%] w-3 h-3 bg-error/40 rounded-full group cursor-pointer">
+<div class="hidden group-hover:block absolute -top-12 -left-1/2 bg-on-surface text-white p-2 rounded text-[10px] whitespace-nowrap z-10">异常值: 偏差 +24%</div>
+</div>
+<div class="absolute -left-10 bottom-1/2 -rotate-90 text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">Predicted Arrival Time</div>
+<div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">Actual Arrival Time</div>
+</div>
+</div>
+<!-- Insight Rail -->
+<div class="lg:col-span-1 bg-surface-container-low rounded-xl p-6 flex flex-col space-y-6">
+<h4 class="text-sm font-headline font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">lightbulb</span>
+                        算法洞察
+                    </h4>
+<div class="space-y-4">
+<div class="bg-surface-container-lowest p-4 rounded-lg">
+<p class="text-xs font-bold text-primary mb-1 uppercase">高峰期表现</p>
+<p class="text-sm leading-relaxed">在早高峰 07:30-09:00 时段，MAPE 略微上升至 9.2%，建议优化该时段的路网权重参数。</p>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg">
+<p class="text-xs font-bold text-secondary mb-1 uppercase">异常天气修正</p>
+<p class="text-sm leading-relaxed">昨日雨天环境，算法自动触发“气象修正模块”，有效降低误差约 1.5 分钟。</p>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg">
+<p class="text-xs font-bold text-tertiary mb-1 uppercase">数据完整性</p>
+<div class="flex items-end justify-between mt-1">
+<span class="text-2xl font-bold">99.8%</span>
+<span class="text-[10px] text-green-600 font-bold">健康</span>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-outline-variant/20">
+<button class="w-full py-3 text-sm font-bold text-primary hover:bg-white rounded-lg transition-colors">
+                            查看详细评估日志
+                        </button>
+</div>
+</div>
+</div>
+<!-- Table Section -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="p-6 border-b border-surface-container flex justify-between items-center">
+<h4 class="text-lg font-headline font-bold">详细预测记录</h4>
+<div class="flex gap-2">
+<select class="text-xs font-medium border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary py-1.5 pl-3 pr-8 bg-surface-container-high">
+<option>所有线路</option>
+<option>101路</option>
+<option>205路</option>
+</select>
+<select class="text-xs font-medium border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary py-1.5 pl-3 pr-8 bg-surface-container-high">
+<option>按偏差降序</option>
+<option>按时间倒序</option>
+</select>
+</div>
+</div>
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low text-xs font-bold text-on-surface-variant uppercase tracking-wider">
+<th class="px-8 py-4">时间戳</th>
+<th class="px-6 py-4">线路编号</th>
+<th class="px-6 py-4">车辆ID</th>
+<th class="px-6 py-4">预测到达</th>
+<th class="px-6 py-4">实际到达</th>
+<th class="px-6 py-4 text-right">偏差 (s)</th>
+<th class="px-8 py-4 text-center">状态</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container text-sm">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-8 py-4 font-medium">14:23:45</td>
+<td class="px-6 py-4">Route 101</td>
+<td class="px-6 py-4 font-mono text-xs">BUS-2940</td>
+<td class="px-6 py-4">14:32:00</td>
+<td class="px-6 py-4">14:32:15</td>
+<td class="px-6 py-4 text-right font-bold text-green-600">+15s</td>
+<td class="px-8 py-4 text-center">
+<span class="px-2 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded-full">高精度</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-8 py-4 font-medium">14:20:12</td>
+<td class="px-6 py-4">Route 205</td>
+<td class="px-6 py-4 font-mono text-xs">BUS-1182</td>
+<td class="px-6 py-4">14:45:30</td>
+<td class="px-6 py-4">14:43:10</td>
+<td class="px-6 py-4 text-right font-bold text-red-600">-140s</td>
+<td class="px-8 py-4 text-center">
+<span class="px-2 py-1 bg-red-100 text-red-700 text-[10px] font-bold rounded-full">偏差预警</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-8 py-4 font-medium">14:18:55</td>
+<td class="px-6 py-4">Route 101</td>
+<td class="px-6 py-4 font-mono text-xs">BUS-3051</td>
+<td class="px-6 py-4">14:35:00</td>
+<td class="px-6 py-4">14:35:42</td>
+<td class="px-6 py-4 text-right font-bold text-primary">+42s</td>
+<td class="px-8 py-4 text-center">
+<span class="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded-full">中等精度</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-8 py-4 font-medium">14:15:30</td>
+<td class="px-6 py-4">Route 089</td>
+<td class="px-6 py-4 font-mono text-xs">BUS-2273</td>
+<td class="px-6 py-4">14:25:00</td>
+<td class="px-6 py-4">14:25:05</td>
+<td class="px-6 py-4 text-right font-bold text-green-600">+5s</td>
+<td class="px-8 py-4 text-center">
+<span class="px-2 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded-full">极高精度</span>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-4 bg-surface-container-low/30 border-t border-surface-container flex justify-between items-center text-xs font-medium text-on-surface-variant">
+<p>显示 1-4 条，共 142,809 条记录</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-surface-container-highest rounded hover:bg-surface-container-high transition-colors">上一页</button>
+<button class="px-3 py-1 bg-primary text-white rounded">1</button>
+<button class="px-3 py-1 bg-surface-container-highest rounded hover:bg-surface-container-high transition-colors">2</button>
+<button class="px-3 py-1 bg-surface-container-highest rounded hover:bg-surface-container-high transition-colors">3</button>
+<button class="px-3 py-1 bg-surface-container-highest rounded hover:bg-surface-container-high transition-colors">下一页</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

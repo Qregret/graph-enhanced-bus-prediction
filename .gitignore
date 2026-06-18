@@ -1,0 +1,11 @@
+﻿node_modules/
+dist/
+.idea/
+__pycache__/
+venv/
+.env
+*.log
+target/
+*.class
+*.jar
+*.tar.gz

@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'DIN Alternate', 'Bahnschrift', 'Segoe UI', sans-serif;
+  color: #dffbff;
+  background: #050a14;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html:has(body[data-app-mode='system']) {
+  background:
+    radial-gradient(circle at top left, rgba(55, 192, 222, 0.12), transparent 26%),
+    linear-gradient(180deg, #f4f7fb 0%, #eef3f8 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0, 133, 255, 0.12), transparent 34%),
+    radial-gradient(circle at top, rgba(0, 255, 255, 0.08), transparent 28%),
+    linear-gradient(180deg, #07101e 0%, #050a14 60%, #04070f 100%);
+}
+
+body[data-app-mode='system'] {
+  background:
+    radial-gradient(circle at top left, rgba(55, 192, 222, 0.12), transparent 26%),
+    linear-gradient(180deg, #f4f7fb 0%, #eef3f8 100%);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}

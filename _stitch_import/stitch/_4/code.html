@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>综合监控大盘 - 智能公交调度平台</title>
+<!-- Fonts and Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#4cd7f6",
+                        "tertiary": "#8c5000",
+                        "primary-fixed": "#acedff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#2d1600",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "on-secondary-container": "#3f6b76",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e0e3e6",
+                        "secondary-fixed": "#bceaf7",
+                        "on-secondary-fixed-variant": "#1e4d58",
+                        "secondary-fixed-dim": "#a1cedb",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#3d494c",
+                        "tertiary-container": "#e89337",
+                        "surface-container-high": "#e6e8eb",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "primary-container": "#06b6d4",
+                        "tertiary-fixed-dim": "#ffb873",
+                        "tertiary-fixed": "#ffdcbf",
+                        "on-secondary-fixed": "#001f26",
+                        "on-primary-container": "#00424f",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "background": "#f7f9fc",
+                        "surface-container-highest": "#e0e3e6",
+                        "outline-variant": "#bcc9cd",
+                        "inverse-surface": "#2d3133",
+                        "surface-tint": "#00687a",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#bceaf7",
+                        "error": "#ba1a1a",
+                        "on-surface": "#191c1e",
+                        "outline": "#6d797d",
+                        "surface": "#f7f9fc",
+                        "surface-container": "#eceef1",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#191c1e",
+                        "surface-dim": "#d8dadd",
+                        "surface-container-low": "#f2f4f7",
+                        "primary": "#00687a",
+                        "inverse-on-surface": "#eff1f4",
+                        "on-tertiary-container": "#5b3200",
+                        "on-primary-fixed": "#001f26",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#386570",
+                        "surface-bright": "#f7f9fc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fc; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 p-4 bg-[#f2f4f7] dark:bg-slate-950 flex flex-col no-border surface-container-low">
+<div class="mb-8 px-4">
+<h1 class="font-manrope font-extrabold text-[#00687a] text-xl tracking-tight">智能公交调度平台</h1>
+<p class="text-xs font-medium opacity-60 text-[#191c1e]">Enterprise Transit v2.0</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Active: 综合监控 -->
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-800 text-[#00687a] shadow-sm rounded-lg transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-inter text-sm font-medium">综合监控</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-inter text-sm font-medium">客流预测</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="font-inter text-sm font-medium">智能调度</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-inter text-sm font-medium">算法评估</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-inter text-sm font-medium">GIS管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#191c1e] opacity-60 hover:opacity-100 hover:bg-[#e6e8eb] dark:hover:bg-slate-800 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+<span class="font-inter text-sm font-medium">大屏引导</span>
+</a>
+</nav>
+<div class="mt-auto px-4 py-4 flex items-center gap-3 bg-surface-container-high rounded-xl">
+<img alt="User Profile" class="w-8 h-8 rounded-full bg-primary-container" data-alt="minimalist user avatar icon with a soft blue circular background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRpVltPcPWJ41s9lbJ89eWf_5vL8tDvA2EQI5gqRjUnMc95a7O-Mui9fX0tFkf_umLOZnag-QohmQhi-KiZHsMPMi97bkXXAFzMu-wloaWWVwvXId1kOZhFeF4OD3cBH811bZOGhOR6jFjEpAVvPXqgAv1TSgbnynFsMb007tm8GJWbyvDkQ28nMYDTj3A5JTsQsCMsdCruDi3H9nn0De62NkGrW-0RcYKefqPTr6ZQbDxnhE4A43khdK5a360sVvvE4JFoaCXDSA"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold text-on-surface truncate">Admin Operations</p>
+<p class="text-[10px] opacity-60 text-on-surface">Standard Access</p>
+</div>
+</div>
+</aside>
+<!-- Main Canvas Area -->
+<main class="ml-64 flex-1 flex flex-col min-h-screen">
+<!-- TopNavBar Shell -->
+<header class="sticky top-0 w-full z-40 flex items-center justify-between bg-white/80 backdrop-blur-xl h-16 px-8 bg-surface-container-low">
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-sm" data-icon="search">search</span>
+<input class="bg-surface-container-high border-none rounded-full pl-10 pr-4 py-1.5 text-sm w-80 focus:ring-2 focus:ring-primary/20" placeholder="搜索线路、站台或车辆..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-on-surface hover:bg-slate-100 transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="p-2 text-on-surface hover:bg-slate-100 transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="p-8 flex flex-col gap-8">
+<!-- Header Section -->
+<div class="flex justify-between items-end">
+<div>
+<span class="label-md font-bold uppercase tracking-widest text-on-surface-variant text-[10px]">Real-time Operations</span>
+<h2 class="text-3xl font-extrabold text-on-surface font-headline tracking-tight">综合监控大盘 - 工作台</h2>
+</div>
+<div class="flex gap-3">
+<div class="flex items-center gap-2 bg-primary-container/10 px-4 py-2 rounded-xl">
+<span class="material-symbols-outlined text-primary" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm font-semibold text-primary">2024年5月24日 10:45:12</span>
+</div>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Summary Metrics (Left 9 columns) -->
+<div class="col-span-12 lg:col-span-9 flex flex-col gap-8">
+<!-- Top Row: Metric Cards -->
+<div class="grid grid-cols-4 gap-6">
+<!-- Total Passengers -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-b-4 border-primary">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 bg-primary-container/10 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+</div>
+<span class="text-xs font-bold text-success text-[#00687a] flex items-center">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span> 12%
+                                </span>
+</div>
+<p class="text-xs font-medium text-on-surface-variant mb-1">今日累计客流量</p>
+<h3 class="text-2xl font-extrabold text-on-surface">1,248,590</h3>
+</div>
+<!-- Peak Prediction -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-b-4 border-secondary">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 bg-secondary-container/20 rounded-lg flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="speed">speed</span>
+</div>
+</div>
+<p class="text-xs font-medium text-on-surface-variant mb-1">下个高峰时段预测</p>
+<h3 class="text-2xl font-extrabold text-on-surface">17:30 - 19:00</h3>
+</div>
+<!-- Active Buses -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-b-4 border-primary-container">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 bg-primary-container/20 rounded-lg flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="directions_bus">directions_bus</span>
+</div>
+<span class="px-2 py-0.5 bg-success/10 text-[10px] font-bold text-primary-container rounded">在线</span>
+</div>
+<p class="text-xs font-medium text-on-surface-variant mb-1">实时在途公交</p>
+<h3 class="text-2xl font-extrabold text-on-surface">3,842 <span class="text-sm font-normal opacity-50">/ 4,000</span></h3>
+</div>
+<!-- Overcrowded Stations -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-b-4 border-error">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 bg-error-container/40 rounded-lg flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<span class="text-xs font-bold text-error flex items-center">
+                                    +3 站
+                                </span>
+</div>
+<p class="text-xs font-medium text-on-surface-variant mb-1">高拥挤度预警站台</p>
+<h3 class="text-2xl font-extrabold text-on-surface">14 <span class="text-sm font-normal opacity-50">stations</span></h3>
+</div>
+</div>
+<!-- Main Trend Chart -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm relative overflow-hidden">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h3 class="text-lg font-bold text-on-surface">客流趋势实时监控 (Actual vs. Predicted)</h3>
+<p class="text-sm text-on-surface-variant opacity-70">全网实时数据聚合对比</p>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-xs font-bold">实际客流</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary-container"></span>
+<span class="text-xs font-bold">预测客流</span>
+</div>
+</div>
+</div>
+<div class="h-80 w-full relative flex items-end justify-between gap-2 px-4">
+<!-- Visual placeholder for a sophisticated line chart -->
+<div class="absolute inset-0 p-8 flex items-end">
+<svg class="w-full h-full opacity-30" preserveaspectratio="none" viewbox="0 0 800 200">
+<path d="M0,150 C100,140 200,180 300,100 C400,20 500,80 600,40 C700,20 800,60 800,60 L800,200 L0,200 Z" fill="url(#grad1)"></path>
+<path d="M0,160 C100,150 200,170 300,120 C400,60 500,90 600,50 C700,40 800,70 800,70" fill="none" stroke="#00687a" stroke-width="3"></path>
+<path d="M0,180 C100,170 200,190 300,140 C400,100 500,120 600,80 C700,70 800,90 800,90" fill="none" stroke="#06b6d4" stroke-dasharray="8,4" stroke-width="2"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#00687a;stop-opacity:0.2"></stop>
+<stop offset="100%" style="stop-color:#00687a;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<!-- X Axis -->
+<div class="absolute bottom-0 left-0 w-full flex justify-between px-8 text-[10px] font-bold text-on-surface-variant">
+<span>06:00</span><span>08:00</span><span>10:00</span><span>12:00</span><span>14:00</span><span>16:00</span><span>18:00</span><span>20:00</span><span>22:00</span>
+</div>
+</div>
+</div>
+<!-- Congested Routes Section -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold text-on-surface">全网最拥堵线路排名 (Top 5)</h3>
+<button class="text-primary text-xs font-bold hover:underline">查看全部列表</button>
+</div>
+<div class="grid grid-cols-5 gap-4">
+<!-- Route 1 -->
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<span class="px-2 py-1 bg-primary text-white text-[10px] font-bold rounded">115路</span>
+<span class="text-error font-bold text-xs">92% 拥挤</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error" style="width: 92%"></div>
+</div>
+<p class="text-[10px] font-medium text-on-surface-variant truncate">西门枢纽 → 南山公园</p>
+</div>
+<!-- Route 2 -->
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<span class="px-2 py-1 bg-primary text-white text-[10px] font-bold rounded">K2专线</span>
+<span class="text-error font-bold text-xs">88% 拥挤</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error" style="width: 88%"></div>
+</div>
+<p class="text-[10px] font-medium text-on-surface-variant truncate">高铁站 → 市中心医院</p>
+</div>
+<!-- Route 3 -->
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<span class="px-2 py-1 bg-primary text-white text-[10px] font-bold rounded">32路</span>
+<span class="text-tertiary-container font-bold text-xs">82% 拥挤</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container" style="width: 82%"></div>
+</div>
+<p class="text-[10px] font-medium text-on-surface-variant truncate">大学城 → 科技产业园</p>
+</div>
+<!-- Route 4 -->
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<span class="px-2 py-1 bg-primary text-white text-[10px] font-bold rounded">B1快速</span>
+<span class="text-tertiary-container font-bold text-xs">79% 拥挤</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container" style="width: 79%"></div>
+</div>
+<p class="text-[10px] font-medium text-on-surface-variant truncate">环城东路 → 环城西路</p>
+</div>
+<!-- Route 5 -->
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<span class="px-2 py-1 bg-primary text-white text-[10px] font-bold rounded">502路</span>
+<span class="text-tertiary-container font-bold text-xs">75% 拥挤</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container" style="width: 75%"></div>
+</div>
+<p class="text-[10px] font-medium text-on-surface-variant truncate">城郊新区 → 贸易中心</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Insight Rail (Right 3 columns) -->
+<div class="col-span-12 lg:col-span-3 flex flex-col gap-8">
+<!-- Weather Widget -->
+<div class="bg-gradient-to-br from-primary to-primary-container p-6 rounded-xl text-white shadow-lg relative overflow-hidden">
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<p class="text-sm font-bold opacity-80">实时天气</p>
+<span class="material-symbols-outlined text-4xl" data-icon="cloudy_snowing">cloudy_snowing</span>
+</div>
+<h3 class="text-4xl font-extrabold mb-1">22°C</h3>
+<p class="text-sm font-medium">阵雨 · 湿度 85%</p>
+<div class="mt-4 pt-4 border-t border-white/20 flex gap-4 text-[10px]">
+<div>
+<p class="opacity-60">能见度</p>
+<p class="font-bold">2.4 km</p>
+</div>
+<div>
+<p class="opacity-60">风速</p>
+<p class="font-bold">4 级 北风</p>
+</div>
+</div>
+</div>
+<!-- Background decoration -->
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+</div>
+<!-- Real-time Alerts List -->
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col gap-6 flex-1 min-h-[600px] border-l border-white/50 backdrop-blur-sm">
+<div class="flex items-center justify-between">
+<h3 class="text-sm font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-sm" data-icon="emergency_home" data-weight="fill">emergency_home</span>
+                                实时预警列表
+                            </h3>
+<span class="px-2 py-0.5 bg-error/10 text-error text-[10px] font-bold rounded-full">3 New</span>
+</div>
+<div class="flex flex-col gap-4 overflow-y-auto">
+<!-- Alert Item 1 -->
+<div class="p-4 bg-white/60 rounded-xl border-l-4 border-error shadow-sm">
+<div class="flex justify-between mb-2">
+<span class="text-[10px] font-bold text-error">紧急报警</span>
+<span class="text-[10px] opacity-60">10:42</span>
+</div>
+<p class="text-xs font-bold text-on-surface mb-1">车辆故障：115路 (A-4029)</p>
+<p class="text-[10px] text-on-surface-variant leading-relaxed">检测到发动机过热预警，位置：解放路站台。建议立即换车接替。</p>
+</div>
+<!-- Alert Item 2 -->
+<div class="p-4 bg-white/60 rounded-xl border-l-4 border-tertiary-container shadow-sm">
+<div class="flex justify-between mb-2">
+<span class="text-[10px] font-bold text-tertiary-container">交通拥堵</span>
+<span class="text-[10px] opacity-60">10:35</span>
+</div>
+<p class="text-xs font-bold text-on-surface mb-1">路段拥堵：滨江大道</p>
+<p class="text-[10px] text-on-surface-variant leading-relaxed">受交通事故影响，平均通过时间延长12分钟，涉及线路：32路, B1路。</p>
+</div>
+<!-- Alert Item 3 -->
+<div class="p-4 bg-white/60 rounded-xl border-l-4 border-primary shadow-sm">
+<div class="flex justify-between mb-2">
+<span class="text-[10px] font-bold text-primary">调配通知</span>
+<span class="text-[10px] opacity-60">10:20</span>
+</div>
+<p class="text-xs font-bold text-on-surface mb-1">增加班次：12路</p>
+<p class="text-[10px] text-on-surface-variant leading-relaxed">识别到大学城站台持续高密度客流，已自动调配2台预备车上线。</p>
+</div>
+<!-- Alert Item 4 -->
+<div class="p-4 bg-white/60 rounded-xl border-l-4 border-on-surface-variant shadow-sm opacity-60">
+<div class="flex justify-between mb-2">
+<span class="text-[10px] font-bold">系统更新</span>
+<span class="text-[10px] opacity-60">09:15</span>
+</div>
+<p class="text-xs font-bold text-on-surface mb-1">GIS地图数据同步完成</p>
+<p class="text-[10px] text-on-surface-variant leading-relaxed">全城542个站点坐标已完成坐标系偏移校准。</p>
+</div>
+</div>
+<button class="mt-auto w-full py-3 bg-surface-container-high text-on-surface-variant text-[10px] font-bold rounded-xl hover:bg-surface-container-highest transition-colors">
+                            查看历史预警记录
+                        </button>
+</div>
+<!-- GIS Peek (Static Map Preview) -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm h-48 relative group cursor-pointer">
+<div class="absolute inset-0 bg-slate-200">
+<img alt="City Map" class="w-full h-full object-cover" data-alt="clean minimal digital map of a city with cyan colored bus routes and pulsing red nodes for congested areas" data-location="Hangzhou" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR8nEmJ3fFVf7AE_E42ASDOoO-QvPDfk55fmEonfMP3g6VIK0Baf2id4lKQs1jFa-7LpiVtptfrVRVIa9MlVGqkYuvUL_LpuyrRV3X4l1qdRjLygZLWXIWWWjhfNpqawgKSCT1BRe3nuRaK6AaXoOcEK5MOSFfknTilwhGxuX7sjWotK1romqBhoOi9DgcTUToGMho7kldtJTibqWkes9Kuy4AgJolEoiKctSozP680U-q6WL0Q84yD5WtPYfLk481LFIJCs55qpg"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+<div class="absolute bottom-4 left-4 text-white">
+<p class="text-xs font-bold">实时GIS全视图</p>
+<p class="text-[10px] opacity-80">点击进入全屏监控</p>
+</div>
+<div class="absolute top-4 right-4 w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="open_in_full">open_in_full</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

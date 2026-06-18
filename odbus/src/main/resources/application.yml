@@ -1,0 +1,33 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: odbus
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/cdbus?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: ${MYSQL_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    timeout: 5s
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 1
+        max-wait: 5s
+app:
+  amap:
+    weather-key: ${AMAP_WEATHER_KEY:}
+    weather-city: 500102
+    weather-cache-minutes: 10
+  redis:
+    key-prefix: cdbus
+    hot-prefix: cdbus:hot
+    scan-count: 500
+    cache-minutes: 10
+    hot-days: 7
