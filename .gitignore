@@ -3,7 +3,11 @@ dist/
 .idea/
 __pycache__/
 venv/
+.venv/
 .env
+langchain/data/vector_store/
+langchain/data/processed/
+langchain/data/evaluation/
 *.log
 target/
 *.class

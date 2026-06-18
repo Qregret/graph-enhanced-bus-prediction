@@ -1,148 +1,93 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
-from threading import Lock
-from typing import Optional
 
-import torch
+# This API-backed service does not use local Transformers/PyTorch. Disabling the
+# optional probe also isolates it from the separate local distillation runtime.
+os.environ.setdefault("USE_TORCH", "0")
+
 import uvicorn
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from peft import PeftModel
+from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
-from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
 BASE_DIR = Path(__file__).resolve().parent
-BASE_MODEL_PATH = BASE_DIR / "qwen_base_model"
-LORA_PATH = BASE_DIR / "checkpoint-1875"
+load_dotenv(BASE_DIR / ".env")
+
+GLM_MODEL = os.getenv("GLM_MODEL", "glm-4.5-air")
+GLM_BASE_URL = os.getenv(
+    "GLM_BASE_URL",
+    "https://open.bigmodel.cn/api/paas/v4/",
+)
+SYSTEM_PROMPT = "你是专业的智慧公交调度与出行客服专家。回答应准确、简洁，不得虚构实时数据。"
 
 
 class ChatRequest(BaseModel):
     prompt: str = Field(..., min_length=1, description="用户问题")
-    max_tokens: int = Field(256, ge=1, le=1024, description="最大生成 token 数")
-    temperature: float = Field(0.7, ge=0.0, le=1.5, description="采样温度")
+    max_tokens: int = Field(500, ge=1, le=4096, description="最大生成 token 数")
+    temperature: float = Field(0.0, ge=0.0, le=1.5, description="采样温度")
 
 
-app = FastAPI(title="公交 OD 客服大模型微服务", version="1.1")
-
-model: Optional[PeftModel] = None
-tokenizer = None
-_load_lock = Lock()
+app = FastAPI(title="公交 OD 客服 GLM 微服务", version="2.0")
 
 
-def _ensure_model_files() -> None:
-    missing = []
-    if not BASE_MODEL_PATH.exists():
-        missing.append(str(BASE_MODEL_PATH))
-    if not LORA_PATH.exists():
-        missing.append(str(LORA_PATH))
-    if missing:
-        raise FileNotFoundError(
-            "模型目录不存在，请先解压模型文件：\n" + "\n".join(missing)
+def build_model(request: ChatRequest) -> ChatOpenAI:
+    api_key = os.getenv("ZHIPUAI_API_KEY")
+    if not api_key:
+        raise RuntimeError(
+            "缺少 ZHIPUAI_API_KEY，请在环境变量或 蒸馏/OD客服/.env 中配置。"
         )
 
-
-def _infer_model_device():
-    if torch.cuda.is_available():
-        return "auto", torch.float16
-    return None, torch.float32
-
-
-def load_model_if_needed() -> None:
-    global model, tokenizer
-    if model is not None and tokenizer is not None:
-        return
-
-    with _load_lock:
-        if model is not None and tokenizer is not None:
-            return
-
-        _ensure_model_files()
-        print("正在加载模型，首次启动会较慢。")
-
-        device_map, dtype = _infer_model_device()
-
-        tokenizer = AutoTokenizer.from_pretrained(
-            str(BASE_MODEL_PATH),
-            trust_remote_code=True,
-        )
-
-        model_kwargs = {
-            "trust_remote_code": True,
-            "torch_dtype": dtype,
-            "low_cpu_mem_usage": True,
-        }
-        if device_map is not None:
-            model_kwargs["device_map"] = device_map
-
-        base_model = AutoModelForCausalLM.from_pretrained(
-            str(BASE_MODEL_PATH),
-            **model_kwargs,
-        )
-
-        model = PeftModel.from_pretrained(base_model, str(LORA_PATH))
-        model.eval()
-        print("模型加载完成，服务可用。")
-
-
-def _get_model_input_device() -> torch.device:
-    assert model is not None
-    return next(model.parameters()).device
+    return ChatOpenAI(
+        model=GLM_MODEL,
+        api_key=api_key,
+        base_url=GLM_BASE_URL,
+        temperature=request.temperature,
+        max_tokens=request.max_tokens,
+        timeout=60,
+        max_retries=2,
+    )
 
 
 @app.get("/api/v1/health")
 async def health():
     return {
         "status": "ok",
-        "model_loaded": model is not None and tokenizer is not None,
-        "base_model_path": str(BASE_MODEL_PATH),
-        "lora_path": str(LORA_PATH),
+        "provider": "zhipuai",
+        "model": GLM_MODEL,
+        "configured": bool(os.getenv("ZHIPUAI_API_KEY")),
     }
 
 
 @app.post("/api/v1/chat")
 async def chat_endpoint(request: ChatRequest):
     try:
-        load_model_if_needed()
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"模型加载失败: {exc}") from exc
-
-    try:
-        messages = [
-            {"role": "system", "content": "你是专业的智慧公交调度与出行客服专家。"},
-            {"role": "user", "content": request.prompt},
-        ]
-        text = tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=True,
+        model = build_model(request)
+        response = await model.ainvoke(
+            [
+                SystemMessage(content=SYSTEM_PROMPT),
+                HumanMessage(content=request.prompt),
+            ]
         )
+        response_text = response.content
+        if not isinstance(response_text, str):
+            response_text = str(response_text)
 
-        model_inputs = tokenizer([text], return_tensors="pt")
-        model_inputs = {k: v.to(_get_model_input_device()) for k, v in model_inputs.items()}
-
-        with torch.no_grad():
-            generated_ids = model.generate(
-                **model_inputs,
-                max_new_tokens=request.max_tokens,
-                temperature=request.temperature,
-                do_sample=request.temperature > 0,
-                pad_token_id=tokenizer.eos_token_id,
-            )
-
-        input_ids = model_inputs["input_ids"]
-        new_token_ids = [
-            output_ids[len(source_ids):]
-            for source_ids, output_ids in zip(input_ids, generated_ids)
-        ]
-        response_text = tokenizer.batch_decode(
-            new_token_ids,
-            skip_special_tokens=True,
-        )[0].strip()
-
-        return {"status": "success", "data": {"response": response_text}}
+        return {
+            "status": "success",
+            "data": {
+                "response": response_text.strip(),
+                "model": GLM_MODEL,
+            },
+        }
+    except RuntimeError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"推理错误: {exc}") from exc
+        raise HTTPException(status_code=502, detail=f"GLM 调用失败: {exc}") from exc
 
 
 if __name__ == "__main__":

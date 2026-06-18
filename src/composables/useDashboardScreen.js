@@ -14,8 +14,8 @@ import {
 import { BUS_MARKER_ICON } from '../utils/dashboardMapAssets'
 import { fetchDashboardData, fetchDashboardLines } from '../services/dashboardApi'
 
-const AMAP_KEY = 'YOUR_AMAP_KEY'
-const AMAP_SECURITY_JS_CODE = 'YOUR_AMAP_SECURITY_CODE'
+const AMAP_KEY = import.meta.env.VITE_AMAP_KEY || ''
+const AMAP_SECURITY_JS_CODE = import.meta.env.VITE_AMAP_SECURITY_JS_CODE || ''
 const BUS_MARKER_HEADING_OFFSET = 0
 const BUS_MARKER_SIZE = { width: 56, height: 36 }
 
