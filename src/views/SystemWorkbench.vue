@@ -32,8 +32,8 @@
     <main class="wb-main">
       <header class="wb-topbar">
         <div class="wb-topbar__title">
-          <h2>智慧公交态势监测与预测指挥舱</h2>
-          <p>基于隐马尔可夫模型（HMM）构建的城市公交客流智能预测系统</p>
+          <h2>基于图增强与 RAG 的智慧公交调度系统</h2>
+          <p>Graph-enhanced Transit Dispatch System</p>
         </div>
         <div class="wb-topbar__meta">
           <div class="wb-pill">数据引擎已连接</div>
@@ -45,9 +45,9 @@
         <section class="wb-hero">
           <div class="wb-hero__copy">
             <span class="wb-kicker">CORE SYSTEM</span>
-            <h3>智慧公交态势监测与预测指挥舱</h3>
+            <h3>基于图增强与 RAG 的智慧公交调度系统</h3>
             <p>
-              基于隐马尔可夫模型（HMM）构建的城市公交客流智能预测系统，提供全路网监控、
+              Graph-enhanced Transit Dispatch System，提供全路网监控、
               OD 流向分析与拥堵预警的沉浸式可视化体验。
             </p>
 
