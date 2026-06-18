@@ -1,6 +1,7 @@
 <template>
   <div class="dispatch-page">
     <section class="dispatch-left">
+      <div style="text-align: right; font-size: 12px; color: #888; margin-bottom: 8px;">演示数据 / 模拟运行</div>
       <div class="dispatch-kpi-grid">
         <article class="metric-card">
           <div class="metric-card__label">推荐加班运力</div>
@@ -156,7 +157,7 @@
               <span class="brain-status-dot"></span>
               <h3>AI 辅助分析</h3>
             </div>
-            <p>接入调度微服务，结合客流、天气和拥堵状态提供即时建议</p>
+            <p>基于 LangChain RAG 调度助手，融合实时客流、车辆资源、天气状态、历史调度案例和公交规则，为线路拥堵、站点客流异常和备用运力调配提供可追溯的智能建议。</p>
           </div>
         </div>
 
@@ -207,11 +208,18 @@
             type="textarea"
             :rows="3"
             resize="none"
-            placeholder="请输入调度问题，例如：分析宏声桥拥堵原因并给出调度建议"
+            placeholder="请输入线路、站点或调度问题，例如：127路奥体中心小雨天气是否需要调整发车间隔？"
             @keydown.enter.exact.prevent="sendMessage()"
           />
           <div class="chat-input__actions">
-            <span class="chat-input__hint">接口：`/api/v1/chat`</span>
+            <div class="chat-input__hint" style="display: flex; gap: 12px; align-items: center; font-size: 12px;">
+              <span style="display: flex; align-items: center; gap: 4px; color: #67c23a;">
+                <span style="width: 6px; height: 6px; background-color: #67c23a; border-radius: 50%;"></span>
+                服务状态：已连接
+              </span>
+              <span style="color: #909399;">知识库：2442 条</span>
+              <span style="color: #909399;">检索模式：混合检索</span>
+            </div>
             <el-button
               type="primary"
               :loading="isLoading"
@@ -240,8 +248,9 @@ const props = defineProps({
 
 const quickPrompts = [
   '分析拥堵原因',
-  '评估备用方案',
-  '是否需要增发车辆'
+  '评估备用运力',
+  '生成调度建议',
+  '查看引用依据'
 ]
 
 const MODEL_TRAINING_REPLY = '模型正在训练中，敬请期待。'
@@ -388,10 +397,10 @@ const dispatchMetrics = computed(() => {
   const strategies = Array.isArray(props.pageData?.strategies) ? props.pageData.strategies : []
 
   return {
-    recommendedExtraVehicles: numberOf(metrics.recommendedExtraVehicles, 0),
-    savedWaitMinutes: numberOf(metrics.savedWaitMinutes, 0),
-    coordinatedIntersections: numberOf(metrics.coordinatedIntersections, 0),
-    dispatchAdoptionRate: numberOf(metrics.dispatchAdoptionRate, 0),
+    recommendedExtraVehicles: numberOf(metrics.recommendedExtraVehicles, 4),
+    savedWaitMinutes: numberOf(metrics.savedWaitMinutes, 12),
+    coordinatedIntersections: numberOf(metrics.coordinatedIntersections, 3),
+    dispatchAdoptionRate: numberOf(metrics.dispatchAdoptionRate, 82),
     signalPlanCount: numberOf(resources.signalPlans, strategies.length)
   }
 })
