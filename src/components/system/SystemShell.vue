@@ -2,7 +2,7 @@
   <div class="sys-shell">
     <aside class="sys-sidebar">
       <div class="sys-brand">
-        <h1>基于图增强模型的公交下车站点预测系统</h1>
+        <h1>基于图增强与 RAG 的智慧公交调度系统</h1>
         <p>Transit Alighting Prediction</p>
       </div>
 
@@ -109,11 +109,11 @@ const navItems = [
   { key: 'dispatch', label: '智能调度', icon: '调' },
   { key: 'analytics', label: '算法评估', icon: '评' },
   { key: 'gis', label: 'GIS 管理', icon: '图' },
-  { key: 'launchpad', label: '大屏引导', icon: '屏' }
+  { key: 'launchpad', label: '基于图增强与 RAG 的智慧公交调度系统', icon: '屏' }
 ]
 
 const currentNavLabel = computed(() => {
-  return navItems.find((item) => item.key === props.activePage)?.label ?? '基于图增强模型的公交下车站点预测系统'
+  return navItems.find((item) => item.key === props.activePage)?.label ?? '基于图增强与 RAG 的智慧公交调度系统'
 })
 </script>
 

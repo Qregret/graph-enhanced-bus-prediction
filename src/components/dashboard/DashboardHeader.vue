@@ -4,7 +4,7 @@
     <div class="header__side header__side--left"></div>
     <div class="header__center">
       <div class="header__title-wrap">
-        <h1>基于图增强模型的公交下车站点预测系统</h1>
+        <h1>基于图增强与 RAG 的智慧公交调度系统</h1>
         <div class="header__title-core"></div>
       </div>
     </div>

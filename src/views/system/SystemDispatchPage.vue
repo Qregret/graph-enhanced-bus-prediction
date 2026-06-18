@@ -186,6 +186,16 @@
                   {{ message.role === 'user' ? '调度员' : 'AI 调度助手' }}
                 </div>
                 <p>{{ message.content }}</p>
+                <div v-if="message.sources?.length" class="chat-sources">
+                  <span class="chat-sources__title">参考来源</span>
+                  <span
+                    v-for="source in message.sources"
+                    :key="source.key"
+                    class="chat-sources__item"
+                  >
+                    {{ source.label }}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -252,8 +262,6 @@ const quickPrompts = [
   '生成调度建议',
   '查看引用依据'
 ]
-
-const MODEL_TRAINING_REPLY = '模型正在训练中，敬请期待。'
 
 const fallbackDispatchTickets = [
   {
@@ -564,12 +572,32 @@ function pushUserMessage(content) {
   scrollToBottom()
 }
 
-function typeAssistantMessage(fullText) {
+function normalizeSources(sources) {
+  if (!Array.isArray(sources)) return []
+
+  return sources.map((source, index) => {
+    const isRealtime = source.source === 'spring_boot_realtime_api'
+    const isRouteTopology = source.source === 'route_topology_api'
+    const details = [source.line_name, source.station_name, source.sample_id].filter(Boolean)
+
+    return {
+      key: `${source.source || 'source'}-${source.sample_id || index}`,
+      label: isRealtime
+        ? '实时公交数据'
+        : isRouteTopology
+          ? '线路拓扑数据'
+          : details.join(' · ') || source.source || `来源 ${index + 1}`
+    }
+  })
+}
+
+function typeAssistantMessage(fullText, sources = []) {
   return new Promise((resolve) => {
     const target = {
       id: createMessageId(),
       role: 'assistant',
-      content: ''
+      content: '',
+      sources
     }
     messages.value.push(target)
     scrollToBottom()
@@ -600,17 +628,23 @@ async function sendMessage(preset = '') {
   pushUserMessage(prompt)
   isLoading.value = true
 
-  await typeAssistantMessage(MODEL_TRAINING_REPLY)
-  isLoading.value = false
-  return
-
   try {
+    const history = messages.value
+      .slice(0, -1)
+      .filter((message) => message.content)
+      .slice(-10)
+      .map(({ role, content }) => ({ role, content }))
     const response = await fetch('/api/v1/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({
+        prompt,
+        history,
+        top_k: 8,
+        date: props.pageData?.date || undefined
+      })
     })
 
     if (!response.ok) {
@@ -618,13 +652,14 @@ async function sendMessage(preset = '') {
     }
 
     const data = await response.json()
+    const payload = data?.data || data
     const answer =
-      data?.response ||
+      payload?.response ||
       data?.answer ||
       data?.message ||
       '调度服务已响应，但未返回有效文本。'
 
-    await typeAssistantMessage(answer)
+    await typeAssistantMessage(answer, normalizeSources(payload?.sources))
   } catch (error) {
     await typeAssistantMessage(`当前调度服务暂时不可用：${error.message}。请先确认本地 OD 客服微服务已启动。`)
   } finally {
@@ -1565,6 +1600,30 @@ onBeforeUnmount(() => {
   word-break: break-word;
   line-height: 1.55;
   font-size: 12px;
+}
+
+.chat-sources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.chat-sources__title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.chat-sources__item {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(14, 165, 233, 0.1);
+  color: #0369a1;
+  font-size: 10px;
 }
 
 .chat-bubble--loading {

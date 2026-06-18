@@ -94,6 +94,12 @@ public class TransitDashboardController {
         return transitSystemService.getDispatch(date);
     }
 
+    @GetMapping("/system/route-plan")
+    public Map<String, Object> systemRoutePlan(@RequestParam String origin,
+                                               @RequestParam String destination) {
+        return transitSystemService.getRoutePlan(origin, destination);
+    }
+
     @GetMapping("/system/analytics")
     public Map<String, Object> systemAnalytics(@RequestParam(required = false) String date) {
         return transitSystemService.getAnalytics(date);

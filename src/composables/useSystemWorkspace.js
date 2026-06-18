@@ -19,7 +19,7 @@ export function useSystemWorkspace() {
 
   let timer = null
   let activeRequestId = 0
-  let skipNextDateWatch = false
+  let lastFetchedDate = ''
 
   const currentPage = computed(() => systemPageRegistry[activePage.value] ?? systemPageRegistry.launchpad)
   const currentPageData = computed(() => systemBundle.value?.[activePage.value] ?? {})
@@ -40,7 +40,6 @@ export function useSystemWorkspace() {
     const meta = await fetchSystemMeta()
     availableDates.value = Array.isArray(meta.availableDates) ? meta.availableDates : []
     if (!selectedBusinessDate.value && availableDates.value.length) {
-      skipNextDateWatch = true
       selectedBusinessDate.value = availableDates.value[0]
     }
   }
@@ -50,8 +49,7 @@ export function useSystemWorkspace() {
     if (Array.isArray(bundle.availableDates) && bundle.availableDates.length) {
       availableDates.value = bundle.availableDates
     }
-    if (bundle.date) {
-      skipNextDateWatch = true
+    if (bundle.date && selectedBusinessDate.value !== bundle.date) {
       selectedBusinessDate.value = bundle.date
     }
   }
@@ -186,6 +184,10 @@ export function useSystemWorkspace() {
   }
 
   async function loadBundle(date) {
+    if (!date || date === lastFetchedDate) {
+      return
+    }
+    lastFetchedDate = date
     const requestId = ++activeRequestId
     const page = activePage.value
     const cachedBundle = readCachedBundle(date)
@@ -276,10 +278,6 @@ export function useSystemWorkspace() {
   }
 
   watch(selectedBusinessDate, (date, prev) => {
-    if (skipNextDateWatch) {
-      skipNextDateWatch = false
-      return
-    }
     if (!date || date === prev) {
       return
     }

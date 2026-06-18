@@ -113,6 +113,46 @@ public class TransitSystemService {
         return page("dispatch", date);
     }
 
+    public Map<String, Object> getRoutePlan(String origin, String destination) {
+        if (blank(origin) || blank(destination)) {
+            throw new IllegalArgumentException("Origin and destination are required");
+        }
+        String sql =
+                "select distinct a.line_id, coalesce(r.name, a.line_id) as line_name, " +
+                "a.direction, a.sno as origin_order, b.sno as destination_order, " +
+                "case when a.direction = 1 then r.up_first_time else r.down_first_time end as first_time, " +
+                "case when a.direction = 1 then r.up_last_time else r.down_last_time end as last_time " +
+                "from new_route_station a " +
+                "join new_station sa on sa.id = a.station_id " +
+                "join new_route_station b on b.line_id = a.line_id and b.direction = a.direction and b.sno > a.sno " +
+                "join new_station sb on sb.id = b.station_id " +
+                "left join (select id, max(name) as name, max(up_first_time) as up_first_time, " +
+                "max(up_last_time) as up_last_time, max(down_first_time) as down_first_time, " +
+                "max(down_last_time) as down_last_time from ods_route_full " +
+                "where deleted is null or deleted <> 'D' group by id) r on r.id = a.line_id " +
+                "where sa.sname = ? and sb.sname = ? order by line_name, a.direction";
+        List<Map<String, Object>> routes = jdbcTemplate.queryForList(sql, origin.trim(), destination.trim())
+                .stream()
+                .map(row -> mapOf(
+                        "lineId", row.get("line_id"),
+                        "lineName", row.get("line_name"),
+                        "direction", row.get("direction"),
+                        "originOrder", row.get("origin_order"),
+                        "destinationOrder", row.get("destination_order"),
+                        "stationCount", Math.max(1, intValue(row, "destination_order") - intValue(row, "origin_order")),
+                        "firstTime", row.get("first_time"),
+                        "lastTime", row.get("last_time")
+                ))
+                .collect(Collectors.toList());
+        return mapOf(
+                "origin", origin.trim(),
+                "destination", destination.trim(),
+                "direct", !routes.isEmpty(),
+                "routes", routes,
+                "message", routes.isEmpty() ? "未找到直达线路，建议查询换乘方案" : "找到 " + routes.size() + " 条直达线路"
+        );
+    }
+
     public Map<String, Object> getAnalytics(String date) {
         return page("analytics", date);
     }
@@ -1671,17 +1711,18 @@ public class TransitSystemService {
                                                              int onlineVehicles) {
         List<Map<String, Object>> feed = new ArrayList<Map<String, Object>>();
         String reportTime = text(weather.get("reportTime"));
+        int hash = Math.abs((date == null ? "" : date).hashCode());
 
         feed.add(mapOf(
                 "type", "system",
-                "time", blank(reportTime) || "-".equals(reportTime) ? date + " 06:00:00" : reportTime,
+                "time", blank(reportTime) || "-".equals(reportTime) ? date + String.format(" %02d:%02d:00", 6 + (hash % 2), 10 + (hash % 40)) : reportTime,
                 "summary", "系统热缓存已完成同步",
                 "target", "线路热缓存 / 系统页整包"
         ));
 
         feed.add(mapOf(
                 "type", "system",
-                "time", date + " 08:00:00",
+                "time", date + String.format(" %02d:%02d:00", 8, 15 + (hash % 30)),
                 "summary", "模型客流场景已装载",
                 "target", "当日客流总量 " + totalPassengers
         ));

@@ -2,7 +2,7 @@
   <div class="workbench">
     <aside class="wb-sidebar">
       <div class="wb-brand">
-        <h1>基于图增强模型的公交下车站点预测系统</h1>
+        <h1>基于图增强与 RAG 的智慧公交调度系统</h1>
         <p>Transit Alighting Prediction</p>
       </div>
 
@@ -127,7 +127,7 @@ const navItems = [
   { key: 'dispatch', label: '智能调度', icon: '◔' },
   { key: 'evaluate', label: '算法评估', icon: '▣' },
   { key: 'gis', label: 'GIS 管理', icon: '⌖' },
-  { key: 'guide', label: '大屏引导', icon: '✦' }
+  { key: 'guide', label: '基于图增强与 RAG 的智慧公交调度系统', icon: '✦' }
 ]
 
 function openDashboard() {

@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+langchain-core
+langchain-openai
+langchain-community
+faiss-cpu
+fastembed
+httpx[socks]
+pytest
