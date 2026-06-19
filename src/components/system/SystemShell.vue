@@ -109,7 +109,7 @@ const navItems = [
   { key: 'dispatch', label: '智能调度', icon: '调' },
   { key: 'analytics', label: '算法评估', icon: '评' },
   { key: 'gis', label: 'GIS 管理', icon: '图' },
-  { key: 'launchpad', label: '基于图增强模型的公交下车站点预测系统', icon: '屏' }
+  { key: 'launchpad', label: '数据大屏', icon: '屏' }
 ]
 
 const currentNavLabel = computed(() => {

@@ -127,7 +127,7 @@ const navItems = [
   { key: 'dispatch', label: '智能调度', icon: '◔' },
   { key: 'evaluate', label: '算法评估', icon: '▣' },
   { key: 'gis', label: 'GIS 管理', icon: '⌖' },
-  { key: 'guide', label: '基于图增强模型的公交下车站点预测系统', icon: '✦' }
+  { key: 'guide', label: '数据大屏', icon: '✦' }
 ]
 
 function openDashboard() {
