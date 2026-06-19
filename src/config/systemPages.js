@@ -34,7 +34,7 @@ export const systemPageRegistry = {
     component: SystemGisPage
   },
   launchpad: {
-    title: '基于图增强与 RAG 的智慧公交调度系统',
+    title: '基于图增强模型的公交下车站点预测系统',
     description: '面向全屏大屏可视化的统一入口页，可从这里快速切入监测驾驶舱。',
     component: SystemLaunchpadPage
   }

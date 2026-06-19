@@ -2,7 +2,7 @@
   <div class="workbench">
     <aside class="wb-sidebar">
       <div class="wb-brand">
-        <h1>基于图增强与 RAG 的智慧公交调度系统</h1>
+        <h1>基于图增强模型的公交下车站点预测系统</h1>
         <p>Transit Alighting Prediction</p>
       </div>
 
@@ -32,7 +32,7 @@
     <main class="wb-main">
       <header class="wb-topbar">
         <div class="wb-topbar__title">
-          <h2>基于图增强与 RAG 的智慧公交调度系统</h2>
+          <h2>基于图增强模型的公交下车站点预测系统</h2>
           <p>Graph-enhanced Transit Dispatch System</p>
         </div>
         <div class="wb-topbar__meta">
@@ -45,7 +45,7 @@
         <section class="wb-hero">
           <div class="wb-hero__copy">
             <span class="wb-kicker">CORE SYSTEM</span>
-            <h3>基于图增强与 RAG 的智慧公交调度系统</h3>
+            <h3>基于图增强模型的公交下车站点预测系统</h3>
             <p>
               Graph-enhanced Transit Dispatch System，提供全路网监控、
               OD 流向分析与拥堵预警的沉浸式可视化体验。
@@ -127,7 +127,7 @@ const navItems = [
   { key: 'dispatch', label: '智能调度', icon: '◔' },
   { key: 'evaluate', label: '算法评估', icon: '▣' },
   { key: 'gis', label: 'GIS 管理', icon: '⌖' },
-  { key: 'guide', label: '基于图增强与 RAG 的智慧公交调度系统', icon: '✦' }
+  { key: 'guide', label: '基于图增强模型的公交下车站点预测系统', icon: '✦' }
 ]
 
 function openDashboard() {
