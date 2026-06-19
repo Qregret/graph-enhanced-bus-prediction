@@ -18,7 +18,12 @@ jobs:
           node-version: '20'
 
       - name: Build Frontend
+        env:
+          VITE_AMAP_KEY: ${{ secrets.VITE_AMAP_KEY }}
+          VITE_AMAP_SECURITY_JS_CODE: ${{ secrets.VITE_AMAP_SECURITY_JS_CODE }}
         run: |
+          echo "VITE_AMAP_KEY=$VITE_AMAP_KEY" >> .env.production
+          echo "VITE_AMAP_SECURITY_JS_CODE=$VITE_AMAP_SECURITY_JS_CODE" >> .env.production
           npm ci || npm install
           npm run build
 
